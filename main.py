@@ -101,25 +101,18 @@ async def generate(interaction, prompt, model, negative):
     else:
         prompta["19"]["inputs"]["text"] = negative
     prompta["17"]["inputs"]["seed"] = random.randint(0, 10000000000000)
-    if model == "Dreamshaper":
-        prompta["16"]["inputs"]["ckpt_name"] = "dreamshaperXL_sfwV2TurboDPMSDE.safetensors"
-        prompta["17"]["inputs"]["scheduler"] = "karras"
-        prompta["17"]["inputs"]["sampler_name"] = "dpmpp_sde"
-    elif model == "Yiffymix":
-        prompta["16"]["inputs"]["ckpt_name"] = "yiffymix_v52XL.safetensors"
-        prompta["17"]["inputs"]["steps"] = 17
-        prompta["17"]["inputs"]["cfg"] = 5.0
-        prompta["17"]["inputs"]["sampler_name"] = "ddpm"
+    prompta["16"]["inputs"]["ckpt_name"] = models_config["models"][model]["filename"]
+    prompta["17"]["inputs"]["scheduler"] = models_config["models"][model]["scheduler"]
+    prompta["17"]["inputs"]["sampler_name"] = models_config["models"][model]["sampler"]
+    prompta["17"]["inputs"]["steps"] = models_config["models"][model]["steps"]
+    prompta["17"]["inputs"]["cfg"] = models_config["models"][model]["cfg"]
 
     ws = websocket.WebSocket()
     ws.connect("ws://{}/ws?clientId={}".format(server_address, client_id))
     images = await get_images(ws, prompta)
 
-    #Commented out code to display the output images:
-
     for node_id in images:
         for image_data in images[node_id]:
-            from PIL import Image
             import io
             image = io.BytesIO(image_data)
     f = discord.File(fp=image, filename=f"{prompta['17']['inputs']['seed']}.png")
@@ -131,8 +124,7 @@ async def generate(interaction, prompt, model, negative):
 
 models = []
 for model_id, model_data in models_config["models"].items():
-    models.append(model_data["name"])
-
+    models.append(model_id)
 
 @tree.command(name = "generate", description="Make an image")
 async def self(interaction:discord.Interaction, prompt:str, model:typing.Literal[*models], negative:str = ""):
@@ -161,11 +153,9 @@ class Regenerate(discord.ui.View):
             await interaction.response.send_message("Thanks for reporting.", ephemeral=True)
 
 @tree.command(name = "dev", description="Developer commands")
-async def self(interaction:discord.Interaction, command:typing.Literal["Test Chat", "Sync Tree"], input:str = "", input2:str = ""):
-    if command == "Test Chat":
-        message = await interaction.response.send_message("Hello World")
-
+async def self(interaction:discord.Interaction, command:typing.Literal["Sync Tree"], input:str = "", input2:str = ""):
     if command == "Sync Tree":
         await tree.sync()
+        await interaction.response.send_message("Tree synced successfully!", ephemeral= True)
 
 bot.run(key)
