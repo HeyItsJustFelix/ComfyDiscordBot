@@ -67,6 +67,7 @@ async def generate(interaction, prompt, model, negative):
         prompt_id = prompt_id['prompt_id']
         print(prompt_id)
         output_images = {}
+        current_node = ""
         while True:
             out = await asyncio.get_event_loop().run_in_executor(
                 None, lambda: ws.recv()
@@ -75,21 +76,27 @@ async def generate(interaction, prompt, model, negative):
                 message = json.loads(out)
                 if message['type'] == 'executing':
                     data = message['data']
-                    if data['node'] is None and data['prompt_id'] == prompt_id:
-                        break #Execution is done
+                    if data['prompt_id'] == prompt_id:
+                        if data['node'] is None:
+                            break #Execution is done
+                        else:
+                            current_node = data['node']
             else:
-                continue #previews are binary data
+                if current_node == 'save_image_websocket_node':
+                    images_output = output_images.get(current_node, [])
+                    images_output.append(out[8:])
+                    output_images[current_node] = images_output
 
-        history = get_history(prompt_id)[prompt_id]
-        for o in history['outputs']:
-            for node_id in history['outputs']:
-                node_output = history['outputs'][node_id]
-                if 'images' in node_output:
-                    images_output = []
-                    for image in node_output['images']:
-                        image_data = get_image(image['filename'], image['subfolder'], image['type'])
-                        images_output.append(image_data)
-                output_images[node_id] = images_output
+        # history = get_history(prompt_id)[prompt_id]
+        # for o in history['outputs']:
+        #     for node_id in history['outputs']:
+        #         node_output = history['outputs'][node_id]
+        #         if 'images' in node_output:
+        #             images_output = []
+        #             for image in node_output['images']:
+        #                 image_data = get_image(image['filename'], image['subfolder'], image['type'])
+        #                 images_output.append(image_data)
+        #         output_images[node_id] = images_output
 
         return output_images
 
