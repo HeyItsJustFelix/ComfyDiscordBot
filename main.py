@@ -24,7 +24,7 @@ class aclient(discord.AutoShardedClient):
     def __init__(self):
         intents = discord.Intents.default()
         intents.members = True
-        super().__init__(intents=intents, activity=discord.CustomActivity(name="Reminding you of stuff :)", emoji="⏰", status = discord.Status.online))
+        super().__init__(intents=intents, activity=discord.CustomActivity(name="Generating Dreams", emoji="🖼️", status = discord.Status.online))
     async def on_ready(self):
         await tree.sync()
         print("Starting reminders bot as {0.user}".format(bot))
@@ -86,17 +86,6 @@ async def generate(interaction, prompt, model, negative):
                     images_output = output_images.get(current_node, [])
                     images_output.append(out[8:])
                     output_images[current_node] = images_output
-
-        # history = get_history(prompt_id)[prompt_id]
-        # for o in history['outputs']:
-        #     for node_id in history['outputs']:
-        #         node_output = history['outputs'][node_id]
-        #         if 'images' in node_output:
-        #             images_output = []
-        #             for image in node_output['images']:
-        #                 image_data = get_image(image['filename'], image['subfolder'], image['type'])
-        #                 images_output.append(image_data)
-        #         output_images[node_id] = images_output
 
         return output_images
 
