@@ -92,7 +92,7 @@ async def generate(interaction, prompt, model, negative):
     prompta = json.loads(call)
     #set the text prompt for our positive CLIPTextEncode
     prompta["18"]["inputs"]["text"] = prompt
-    if interaction.channel.type != "private": # If not in DMs, add the pre-existing negative
+    if interaction.channel.type != "private" and not interaction.channel.nsfw: # If not in DMs, add the pre-existing negative
         prompta["19"]["inputs"]["text"] = bad_prompt_words + negative
     else:
         prompta["19"]["inputs"]["text"] = negative
