@@ -3,7 +3,7 @@ A discord bot utilizing ComfyUI's API capability
 
 # Instructions
 ## Installing ComfyUI
-In order for the bot to work, you need to install [ComfyUI](https://github.com/comfyanonymous/ComfyUI) first. After setting ComfyUI up following their instructions, add the checkpoints that you'd like to use into the /ComfyUI/models/checkpoints file. If you'd like to use the already set up models, download [Dreamshaper XL v2.1](https://civitai.com/models/112902?modelVersionId=351306) and [Yiffymix XL v52](https://civitai.com/models/3671?modelVersionId=732770), and put those into your checkpoints folder.
+In order for the bot to work, you need to install [ComfyUI](https://github.com/comfyanonymous/ComfyUI) first. After setting ComfyUI up following their instructions, add the checkpoints that you'd like to use into the /ComfyUI/models/checkpoints file. If you'd like to use the already set up models, download [Dreamshaper XL v2.1](https://civitai.com/models/112902?modelVersionId=351306) and [Yiffymix XL v52](https://civitai.red/models/3671/yiffymix?modelVersionId=732770), and put those into your checkpoints folder.
 
 ## Setting up the bot
 Go to the [Discord Developers Portal](https://discord.com/developers/applications) and make a new bot. Make sure to copy the token somewhere safe. Go to the oauth tab and select "Bot" as the Scope, and allow the permissions "Send Messages", and "Attach Files". Inside of the Bot tab, turn on the "Server Members Intent" to allow users to use the bot in DMs.
